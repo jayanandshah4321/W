@@ -25,6 +25,7 @@ h1 {
 
 #city-input {
     flex-grow: 1;
+    /* controls how much a flex item will grow relative to the rest of the flex items inside a flex container  */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px 0 0 4px;

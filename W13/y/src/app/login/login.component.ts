@@ -17,7 +17,7 @@ export class LoginComponent {
   constructor(private router: Router) {}
 
   onLogin(form: any) {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users = JSON.parse(localStorage.getItem('hp') || '[]');
     const user = users.find(
       (u: any) => u.email === form.value.email && u.password === form.value.password
     );

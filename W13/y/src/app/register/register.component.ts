@@ -13,9 +13,10 @@ export class RegisterComponent {
   constructor(private router: Router) {}
 
   onRegister(form: any) {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const users = JSON.parse(localStorage.getItem('hp') || '[]');
     users.push(form.value);
-    localStorage.setItem('users', JSON.stringify(users));
+    console.log(form.value)
+    localStorage.setItem('hp', JSON.stringify(users));
     this.router.navigate(['/login']);
   }
 }
