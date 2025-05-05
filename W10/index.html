@@ -164,10 +164,6 @@
     <div class="container">
         <h1>AJAX To-Do List</h1>
         
-        <!-- <div class="error-message" id="error-message">
-            There was an error connecting to the server. Your changes may not be saved.
-        </div> -->
-        
         <div class="add-task">
             <input type="text" id="new-task" placeholder="Add a new task...">
             <button id="add-btn">Add Task</button>
@@ -188,7 +184,6 @@
     const taskList = document.getElementById('task-list');
     const loadingIndicator = document.getElementById('loading');
     const saveIndicator = document.getElementById('save-indicator');
-    const errorMessage = document.getElementById('error-message');
 
     addBtn.addEventListener('click', addTask);
     newTaskInput.addEventListener('keyup', function(event) {
@@ -244,8 +239,10 @@
     }
 
     function renderTasks(tasks) {
+        console.log("Displaying");
         taskList.innerHTML = '';
         tasks.forEach((task, index) => {
+
             const li = document.createElement('li');
             li.className = 'task-item';
             li.innerHTML = `
@@ -264,22 +261,17 @@
     function editTask(index) {
         const newText = prompt('Edit your task:');
         if (newText === null || newText.trim() === '') return;
-
+        const task = { text: newText, completed: false };
+        console.log(task)
+        console.log(index)
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:5000/api/getdata', true);
+        xhr.open('POST', 'http://localhost:5000/api/edittask', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
-            const tasks = JSON.parse(xhr.responseText);
-            tasks[index].text = newText;
-
-            const updateXhr = new XMLHttpRequest();
-            updateXhr.open('POST', 'http://localhost:5000/api/edittask', true);
-            updateXhr.setRequestHeader('Content-Type', 'application/json');
-            updateXhr.onload = function () {
+            
                 loadTasks();
-            };
-            updateXhr.send(JSON.stringify({ index, task: tasks[index] }));
         };
-        xhr.send();
+        xhr.send(JSON.stringify({ index, task }));
     }
 
     function deleteTask(index) {
@@ -297,7 +289,7 @@
 
         xhr.send(JSON.stringify({ index }));
     }
-    //ADDITIONAL FUNCTIONALITY
+
     function toggleCompletion(index) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://localhost:5000/api/getdata', true);
@@ -316,13 +308,6 @@
         xhr.send();
     }
 
-    function showError(msg) {
-        errorMessage.textContent = msg;
-        errorMessage.style.color = 'red';
-        setTimeout(() => {
-            errorMessage.textContent = '';
-        }, 3000);
-    }
 
     window.onload = function () {
         loadTasks();
