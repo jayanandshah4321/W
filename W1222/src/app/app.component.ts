@@ -13,6 +13,17 @@ export class AppComponent {
   tasks: string[] = [];
   editIndex: number = -1;
 
+  ngOnInit() {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      this.tasks = JSON.parse(savedTasks);
+    }
+  }
+
+  saveToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+
   addTask() {
     if (!this.taskText.trim()) return;
 
@@ -24,6 +35,7 @@ export class AppComponent {
     }
 
     this.taskText = '';
+    this.saveToLocalStorage();
   }
 
   editTask(index: number) {
@@ -33,9 +45,13 @@ export class AppComponent {
 
   deleteTask(index: number) {
     this.tasks.splice(index, 1);
+
     if (this.editIndex === index) {
       this.taskText = '';
       this.editIndex = -1;
     }
+
+    this.saveToLocalStorage();
   }
+
 }
