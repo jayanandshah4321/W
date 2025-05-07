@@ -4,30 +4,149 @@
   <meta charset="UTF-8">
   <title>User List</title>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    ul { list-style-type: none; padding: 0; }
-    li { margin-bottom: 10px; }
+    /* Base */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 40px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+
+    /* Search bar */
+    .search-container {
+      max-width: 400px;
+      margin: 0 auto 30px;
+      display: flex;
+    }
+    .search-container input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      font-size: 1rem;
+    }
+    .search-container button {
+      padding: 10px 15px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-container button:hover {
+      background: #0056b3;
+    }
+
+    /* User list grid */
+    #userList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 0;
+      list-style: none;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* User card */
+    .user-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .user-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ddd;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 12px;
+    }
+    .user-info {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .user-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .user-email {
+      font-size: 0.9rem;
+      color: #555;
+    }
   </style>
 </head>
 <body>
 
   <h1>User List</h1>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search users…">
+    <button id="searchBtn">🔍</button>
+  </div>
+
   <ul id="userList"></ul>
 
   <script>
-    fetch('/api/users')
-      .then(res => res.json())
-      .then(users => {
-        const list = document.getElementById('userList');
-        users.forEach(user => {
-          const li = document.createElement('li');
-          li.textContent = `${user.name} (${user.email})`;
-          list.appendChild(li);
-        });
-      })
-      .catch(err => {
-        console.error('Failed to load users:', err);
+    let allUsers = [];
+
+    function renderList(users) {
+      const list = document.getElementById('userList');
+      list.innerHTML = '';
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.className = 'user-card';
+        li.innerHTML = `
+          <div class="user-avatar"></div>
+          <div class="user-info">
+            <div class="user-name">${user.name}</div>
+            <div class="user-email">${user.email}</div>
+          </div>
+        `;
+        list.appendChild(li);
       });
+    }
+
+    function loadUsers() {
+      fetch('http://localhost:3000/api/users')
+        .then(res => res.json())
+        .then(users => {
+          allUsers = users;
+          renderList(users);
+        })
+        .catch(err => {
+          console.error('Failed to load users:', err);
+        });
+    }
+
+    function filterUsers() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        u.name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q)
+      );
+      renderList(filtered);
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', filterUsers);
+    document.getElementById('searchInput').addEventListener('input', filterUsers);
+
+    window.onload = loadUsers;
   </script>
 </body>
 </html>

@@ -2,10 +2,12 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
+const cors = require('cors');
 
 // Serve static files (index.html)
 app.use(express.static('public'));
-
+app.use(express.json());
+app.use(cors())
 // API to get user data
 app.get('/api/users', (req, res) => {
   fs.readFile(path.join(__dirname, 'users.json'), 'utf8', (err, data) => {

@@ -114,3 +114,75 @@ exports.displayTable = async (req, res) => {
     res.status(500).send(err);
   }
 };
+
+// Seed database with initial student data
+exports.seedStudents = async (req, res) => {
+  try {
+    // First clear existing data (optional)
+    await StudentMarks.deleteMany({});
+    
+    // Sample student data
+    const sampleStudents = [
+      {
+        Name: "John Doe",
+        Roll_No: 101,
+        WAD_Marks: 45,
+        CC_Marks: 42,
+        DSBDA_Marks: 38,
+        CNS_Marks: 40,
+        AI_Marks: 44
+      },
+      {
+        Name: "Jane Smith",
+        Roll_No: 102,
+        WAD_Marks: 48,
+        CC_Marks: 46,
+        DSBDA_Marks: 42,
+        CNS_Marks: 43,
+        AI_Marks: 47
+      },
+      {
+        Name: "Alex Kumar",
+        Roll_No: 103,
+        WAD_Marks: 35,
+        CC_Marks: 30,
+        DSBDA_Marks: 28,
+        CNS_Marks: 32,
+        AI_Marks: 36
+      },
+      {
+        Name: "Sara Patel",
+        Roll_No: 104,
+        WAD_Marks: 22,
+        CC_Marks: 18,
+        DSBDA_Marks: 25,
+        CNS_Marks: 20,
+        AI_Marks: 24
+      },
+      {
+        Name: "Michael Wong",
+        Roll_No: 105,
+        WAD_Marks: 49,
+        CC_Marks: 47,
+        DSBDA_Marks: 45,
+        CNS_Marks: 48,
+        AI_Marks: 50
+      }
+    ];
+    
+    // Insert the sample data
+    await StudentMarks.insertMany(sampleStudents);
+    
+    res.status(200).json({
+      success: true,
+      message: "Database seeded successfully",
+      count: sampleStudents.length
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to seed database",
+      error: err.message
+    });
+  }
+};

@@ -25,7 +25,7 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    AI_marks:{
+    AI_Marks:{
         type:Number,
         required:true
     }

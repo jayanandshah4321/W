@@ -11,4 +11,6 @@ router.get('/less-than-40-math-science', studentController.getLessThan40MathScie
 router.delete('/delete/:name', studentController.deleteStudent);
 router.get('/display', studentController.displayTable);
 
+router.post('/seed', studentController.seedStudents);
+
 module.exports = router;
